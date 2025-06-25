@@ -7,7 +7,7 @@ echo Доступные COM-порты:
 
 set "pidx=0"
 for /f "delims=" %%P in ('powershell -NoProfile -Command ^
-    "Get-CimInstance Win32_PnPEntity | Where-Object { $_.Name -match '\(COM\d+\)' } | ForEach-Object { $_.Name }"' ) do (
+    "Get-WmiObject Win32_PnPEntity | Where-Object { $_.Name -match '\(COM\d+\)' } | ForEach-Object { $_.Name }"' ) do (
     set /a pidx+=1
     set "PORTNAME!pidx!=%%P"
     echo    !pidx!. %%P
@@ -18,18 +18,22 @@ if %pidx%==0 (
 )
 echo.
 
-:: === 1. Сканируем доступные прошивки ===============================
-set "FW_DIR=%~dp0firmware"
+:: === 1. Сканируем прошивки =========================================
+set "FIRMWARE_DIR=%~dp0firmware"
 echo Доступные прошивки:
 
-set "idx=0"
-for /f "delims=" %%F in ('dir /b /a:-d "%FW_DIR%\*.bin" 2^>nul') do (
-    set /a idx+=1
-    echo    !idx!. %%F
-    set "FILE!idx!=%%F"
+set "fw_index=0"
+for /f "delims=" %%F in ('dir /b /a:-d "%FIRMWARE_DIR%\*.bin" 2^>nul') do (
+    set /a fw_index+=1
+    set "FIRMWARE_FILE!fw_index!=%%F"
+    if !fw_index! LSS 10 (
+        echo   !fw_index!. %%F
+    ) else (
+        echo  !fw_index!. %%F
+    )
 )
-if !idx!==0 (
-    echo [ОШИБКА] В каталоге нет *.bin-файлов.
+if !fw_index!==0 (
+    echo [ОШИБКА] В папке firmware нет файлов *.bin
     pause & exit /b
 )
 echo.
@@ -49,16 +53,16 @@ for /f "tokens=2 delims=(" %%A in ("!PORTLINE!") do (
     )
 )
 
-:askFW
-set /p CHOICE=Введите номер прошивки из списка (1-!idx!): 
-if not defined FILE%CHOICE% (
+:: === 3. Запрос выбора прошивки ===
+:askFirmware
+set /p CHOICE=Введите номер прошивки (1-!fw_index!): 
+if not defined FIRMWARE_FILE%CHOICE% (
     echo Неверный выбор. Попробуйте ещё раз.
-    goto askFW
+    goto askFirmware
 )
-set "FILE=!FILE%CHOICE%!"
-for %%I in ("%FW_DIR%\!FILE!") do set "FWPATH=%%~fI"
-echo Выбрана прошивка: "!FILE!"
-echo Выбран порт: "!PORTNAME%PCHOICE%!"
+set "SELECTED_FILE=!FIRMWARE_FILE%CHOICE%!"
+for %%I in ("%FIRMWARE_DIR%\!SELECTED_FILE!") do set "FULL_PATH=%%~fI"
+echo Выбрана прошивка: "!SELECTED_FILE!"
 
 :: === 3. Генерация TTL-скрипта ===============================
 > flash_script.ttl (
