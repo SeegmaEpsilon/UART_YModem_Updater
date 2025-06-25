@@ -7,12 +7,14 @@ A small utility for flashing STM32 microcontrollers using either **UART** (YMODE
 Based on: [STM32_F4_YModem_UART_bootloader](https://github.com/SeegmaEpsilon/STM32_F4_YModem_UART_bootloader).
 
 ## Project Structure
+```
 UART_YModem_Updater/
 ├── firmware/ # Firmware folder
 ├── stlink/ # ST-LINK CLI tool
 ├── teraterm/ # TeraTerm + ttpmacro.exe
 ├── firmware_combine.bat # Main flashing script
 ├── README.md # This file
+```
 
 ## Requirements
 
@@ -81,12 +83,14 @@ This project is distributed under the MIT License.
 Основано на: [STM32_F4_YModem_UART_bootloader](https://github.com/SeegmaEpsilon/STM32_F4_YModem_UART_bootloader).
 
 ## Структура проекта
+```
 UART_YModem_Updater/
 ├── firmware/ # Папка прошивки
 ├── stlink/ # ST-LINK CLI tool
 ├── teraterm/ # TeraTerm + ttpmacro.exe
 ├── firmware_combine.bat # Основной скрипт прошивки
 ├── README.md # Этот файл
+```
 
 ## Требования
 
