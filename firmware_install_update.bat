@@ -54,6 +54,14 @@ if not "%FLASH_MODE%"=="1" if not "%FLASH_MODE%"=="2" (
     goto ask_mode
 )
 
+if "%FLASH_MODE%"=="1" (
+    echo Выбран режим ST-LINK CLI (SWD/JTAG)
+) else if "%FLASH_MODE%"=="2" (
+    echo Выбран режим UART (TeraTerm + YMODEM)
+)
+
+echo.
+
 :: === 4. Запрос выбора прошивки =====================================
 :ask_firmware
 set /p CHOICE=Введите номер прошивки (1-!fw_index!): 
@@ -65,6 +73,7 @@ if not defined FIRMWARE_FILE%CHOICE% (
 set "SELECTED_FILE=!FIRMWARE_FILE%CHOICE%!"
 for %%I in ("%FIRMWARE_DIR%\!SELECTED_FILE!") do set "FULL_PATH=%%~fI"
 echo Выбрана прошивка: "!SELECTED_FILE!"
+echo.
 
 :: === 5. Выполнить прошивку ==========================================
 if "%FLASH_MODE%"=="1" goto do_stlink
@@ -101,6 +110,7 @@ for /f "tokens=2 delims=(" %%A in ("!PORTLINE!") do (
 		set "PORTNUM=!PORTNUM:~3!"
 	)
 )
+echo Выбран порт: "!PORTNAME%PCHOICE%!"
 echo.
 echo [UART] Генерация TTL-скрипта...
 > flash_script.ttl (
