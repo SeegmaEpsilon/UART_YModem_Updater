@@ -55,7 +55,8 @@ if not "%FLASH_MODE%"=="1" if not "%FLASH_MODE%"=="2" (
 
 if "%FLASH_MODE%"=="1" (
     echo Selected mode: ST-LINK CLI (SWD/JTAG)
-) else if "%FLASH_MODE%"=="2" (
+)
+if "%FLASH_MODE%"=="2" (
     echo Selected mode: UART (TeraTerm + YMODEM)
 )
 
