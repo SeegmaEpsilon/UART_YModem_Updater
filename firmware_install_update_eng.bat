@@ -87,9 +87,9 @@ if not exist "%STLINK_CLI%" (
 )
 echo.
 echo [ST-LINK] Starting flash...
-"%STLINK_CLI%" -c SWD UR -OB RDP=0
-"%STLINK_CLI%" -c SWD UR -P "!FULL_PATH!" 0x08000000 -V -Rst
-"%STLINK_CLI%" -c SWD UR -OB RDP=1
+"%STLINK_CLI%" -c SWD -OB RDP=0
+"%STLINK_CLI%" -c SWD -P "!FULL_PATH!" 0x08000000 -V -Rst
+"%STLINK_CLI%" -c SWD -OB RDP=1
 echo.
 echo [DONE] ST-LINK flashing completed.
 goto the_end

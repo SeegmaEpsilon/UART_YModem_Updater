@@ -1,11 +1,10 @@
 @echo off
-chcp 65001 > nul
 setlocal EnableDelayedExpansion
 
-:: === 1. Ð¡ÐºÐ°Ð½Ð¸Ñ€ÑƒÐµÐ¼ COM-Ð¿Ð¾Ñ€Ñ‚Ñ‹ ========================================
+:: === 1. ‘ª ­¨àã¥¬ COM-¯®àâë ========================================
 :scan_com
 echo.
-echo Ð”Ð¾ÑÑ‚ÑƒÐ¿Ð½Ñ‹Ðµ COM-Ð¿Ð¾Ñ€Ñ‚Ñ‹:
+echo „®áâã¯­ë¥ COM-¯®àâë:
 
 set "pidx=0"
 for /f "delims=" %%P in ('powershell -NoProfile -Command ^
@@ -15,14 +14,14 @@ for /f "delims=" %%P in ('powershell -NoProfile -Command ^
     echo   !pidx!. %%P
 )
 if %pidx%==0 (
-    echo [ÐžÐ¨Ð˜Ð‘ÐšÐ] COM-Ð¿Ð¾Ñ€Ñ‚Ñ‹ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ñ‹.
+    echo [Ž˜ˆŠ€] COM-¯®àâë ­¥ ­ ©¤¥­ë.
 )
 echo.
 
-:: === 2. Ð¡ÐºÐ°Ð½Ð¸Ñ€ÑƒÐµÐ¼ Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸ =========================================
+:: === 2. ‘ª ­¨àã¥¬ ¯à®è¨¢ª¨ =========================================
 :scan_firmware
 set "FIRMWARE_DIR=%~dp0firmware"
-echo Ð”Ð¾ÑÑ‚ÑƒÐ¿Ð½Ñ‹Ðµ Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸:
+echo „®áâã¯­ë¥ ¯à®è¨¢ª¨:
 
 set "fw_index=0"
 for /f "delims=" %%F in ('dir /b /a:-d "%FIRMWARE_DIR%\*.bin" 2^>nul') do (
@@ -35,71 +34,72 @@ for /f "delims=" %%F in ('dir /b /a:-d "%FIRMWARE_DIR%\*.bin" 2^>nul') do (
     )
 )
 if !fw_index!==0 (
-    echo [ÐžÐ¨Ð˜Ð‘ÐšÐ] Ð’ Ð¿Ð°Ð¿ÐºÐµ firmware Ð½ÐµÑ‚ Ñ„Ð°Ð¹Ð»Ð¾Ð² *.bin
+    echo [Ž˜ˆŠ€] ‚ ¯ ¯ª¥ firmware ­¥â ä ©«®¢ *.bin
     goto the_end
 )
 echo.
 
-:: === 3. Ð—Ð°Ð¿Ñ€Ð¾Ñ Ñ€ÐµÐ¶Ð¸Ð¼Ð° Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸ =====================================
-echo ÐšÐ°ÐºÐ¾Ð¹ ÑÐ¿Ð¾ÑÐ¾Ð± Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ?
-echo   1. Ð§ÐµÑ€ÐµÐ· ST-LINK CLI (SWD/JTAG)
-echo   2. Ð§ÐµÑ€ÐµÐ· UART (TeraTerm + YMODEM)
+:: === 3. ‡ ¯à®á à¥¦¨¬  ¯à®è¨¢ª¨ =====================================
+echo Š ª®© á¯®á®¡ ¯à®è¨¢ª¨ ¨á¯®«ì§®¢ âì?
+echo   1. —¥à¥§ ST-LINK CLI (SWD/JTAG)
+echo   2. —¥à¥§ UART (TeraTerm + YMODEM)
 echo.
 :ask_mode
-set /p FLASH_MODE=Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ Ñ€ÐµÐ¶Ð¸Ð¼Ð° (1-2): 
+set /p FLASH_MODE=‚¢¥¤¨â¥ ­®¬¥à à¥¦¨¬  (1-2): 
 
 if not "%FLASH_MODE%"=="1" if not "%FLASH_MODE%"=="2" (
-    echo ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€. ÐŸÐ¾Ð¿Ñ€Ð¾Ð±ÑƒÐ¹Ñ‚Ðµ ÐµÑ‰Ñ‘ Ñ€Ð°Ð·.
+    echo ¥¢¥à­ë© ¢ë¡®à. ®¯à®¡ã©â¥ ¥éñ à §.
     echo.
     goto ask_mode
 )
 
 if "%FLASH_MODE%"=="1" (
-    echo Ð’Ñ‹Ð±Ñ€Ð°Ð½ Ñ€ÐµÐ¶Ð¸Ð¼ ST-LINK CLI (SWD/JTAG)
-) else if "%FLASH_MODE%"=="2" (
-    echo Ð’Ñ‹Ð±Ñ€Ð°Ð½ Ñ€ÐµÐ¶Ð¸Ð¼ UART (TeraTerm + YMODEM)
+    echo ‚ë¡à ­ à¥¦¨¬ ST-LINK CLI (SWD/JTAG)
+) 
+if "%FLASH_MODE%"=="2" (
+    echo ‚ë¡à ­ à¥¦¨¬ UART (TeraTerm + YMODEM)
 )
 
 echo.
 
-:: === 4. Ð—Ð°Ð¿Ñ€Ð¾Ñ Ð²Ñ‹Ð±Ð¾Ñ€Ð° Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸ =====================================
+:: === 4. ‡ ¯à®á ¢ë¡®à  ¯à®è¨¢ª¨ =====================================
 :ask_firmware
-set /p CHOICE=Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ¸ (1-!fw_index!): 
+set /p CHOICE=‚¢¥¤¨â¥ ­®¬¥à ¯à®è¨¢ª¨ (1-!fw_index!): 
 if not defined FIRMWARE_FILE%CHOICE% (
-    echo ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€. ÐŸÐ¾Ð¿Ñ€Ð¾Ð±ÑƒÐ¹Ñ‚Ðµ ÐµÑ‰Ñ‘ Ñ€Ð°Ð·.
+    echo ¥¢¥à­ë© ¢ë¡®à. ®¯à®¡ã©â¥ ¥éñ à §.
     echo.
     goto ask_firmware
 )
 set "SELECTED_FILE=!FIRMWARE_FILE%CHOICE%!"
 for %%I in ("%FIRMWARE_DIR%\!SELECTED_FILE!") do set "FULL_PATH=%%~fI"
-echo Ð’Ñ‹Ð±Ñ€Ð°Ð½Ð° Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ°: "!SELECTED_FILE!"
+echo ‚ë¡à ­  ¯à®è¨¢ª : "!SELECTED_FILE!"
 echo.
 
-:: === 5. Ð’Ñ‹Ð¿Ð¾Ð»Ð½Ð¸Ñ‚ÑŒ Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÑƒ ==========================================
+:: === 5. ‚ë¯®«­¨âì ¯à®è¨¢ªã ==========================================
 if "%FLASH_MODE%"=="1" goto do_stlink
 if "%FLASH_MODE%"=="2" goto do_uart
 
-:: === STLINK: Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ° ==============================================
+:: === STLINK: ¯à®è¨¢ª  ==============================================
 :do_stlink
 set "STLINK_CLI=%~dp0stlink\ST-LINK_CLI.exe"
 if not exist "%STLINK_CLI%" (
-    echo [ÐžÐ¨Ð˜Ð‘ÐšÐ] ST-LINK CLI Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½ Ð¿Ð¾ Ð¿ÑƒÑ‚Ð¸: "%STLINK_CLI%"
+    echo [Ž˜ˆŠ€] ST-LINK CLI ­¥ ­ ©¤¥­ ¯® ¯ãâ¨: "%STLINK_CLI%"
     goto the_end
 )
 echo.
-echo [ST-LINK] ÐÐ°Ñ‡Ð¸Ð½Ð°ÐµÐ¼ Ð·Ð°Ð³Ñ€ÑƒÐ·ÐºÑƒ...
-"%STLINK_CLI%" -c SWD UR -OB RDP=0
-"%STLINK_CLI%" -c SWD UR -P "!FULL_PATH!" 0x08000000 -V -Rst
-"%STLINK_CLI%" -c SWD UR -OB RDP=1
+echo [ST-LINK]  ç¨­ ¥¬ § £àã§ªã...
+"%STLINK_CLI%" -c SWD -OB RDP=0
+"%STLINK_CLI%" -c SWD -P "!FULL_PATH!" 0x08000000 -V -Rst
+"%STLINK_CLI%" -c SWD -OB RDP=1
 echo.
-echo [Ð“ÐžÐ¢ÐžÐ’Ðž] ST-LINK Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ° Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð°.
+echo [ƒŽ’Ž‚Ž] ST-LINK ¯à®è¨¢ª  § ¢¥àè¥­ .
 goto the_end
 
-:: === UART: Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ° Ñ‡ÐµÑ€ÐµÐ· Tera Term ================================
+:: === UART: ¯à®è¨¢ª  ç¥à¥§ Tera Term ================================
 :do_uart
-set /p PCHOICE=Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ Ð¿Ð¾Ñ€Ñ‚Ð° Ð¸Ð· ÑÐ¿Ð¸ÑÐºÐ° (1-!pidx!): 
+set /p PCHOICE=‚¢¥¤¨â¥ ­®¬¥à ¯®àâ  ¨§ á¯¨áª  (1-!pidx!): 
 if not defined PORTNAME%PCHOICE% (
-	echo ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€. ÐŸÐ¾Ð¿Ñ€Ð¾Ð±ÑƒÐ¹Ñ‚Ðµ ÐµÑ‰Ñ‘ Ñ€Ð°Ð·.
+	echo ¥¢¥à­ë© ¢ë¡®à. ®¯à®¡ã©â¥ ¥éñ à §.
     echo.
 	goto do_uart
 )
@@ -110,9 +110,9 @@ for /f "tokens=2 delims=(" %%A in ("!PORTLINE!") do (
 		set "PORTNUM=!PORTNUM:~3!"
 	)
 )
-echo Ð’Ñ‹Ð±Ñ€Ð°Ð½ Ð¿Ð¾Ñ€Ñ‚: "!PORTNAME%PCHOICE%!"
+echo ‚ë¡à ­ ¯®àâ: "!PORTNAME%PCHOICE%!"
 echo.
-echo [UART] Ð“ÐµÐ½ÐµÑ€Ð°Ñ†Ð¸Ñ TTL-ÑÐºÑ€Ð¸Ð¿Ñ‚Ð°...
+echo [UART] ƒ¥­¥à æ¨ï TTL-áªà¨¯â ...
 > flash_script.ttl (
     echo connect '/C=!PORTNUM! /BAUD=115200 /FC=NONE'
     echo sendln ':DEVICE_RESET'
@@ -128,11 +128,11 @@ set "TERATERM=%~dp0teraterm\ttpmacro.exe"
 %TERATERM% flash_script.ttl
 del flash_script.ttl
 echo.
-echo [Ð“ÐžÐ¢ÐžÐ’Ðž] UART-Ð¿Ñ€Ð¾ÑˆÐ¸Ð²ÐºÐ° Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð°.
+echo [ƒŽ’Ž‚Ž] UART-¯à®è¨¢ª  § ¢¥àè¥­ .
 goto the_end
 
-:: === Ð—Ð°Ñ‰Ð¸Ñ‚Ð° Ð¾Ñ‚ Ð°Ð²Ñ‚Ð¾Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ð¸Ñ ==================================
+:: === ‡ é¨â  ®â  ¢â®§ ªàëâ¨ï ==================================
 :the_end
 echo.
-echo ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ Ð»ÑŽÐ±ÑƒÑŽ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ Ð´Ð»Ñ Ð²Ñ‹Ñ…Ð¾Ð´Ð°...
+echo  ¦¬¨â¥ «î¡ãî ª« ¢¨èã ¤«ï ¢ëå®¤ ...
 pause > nul
